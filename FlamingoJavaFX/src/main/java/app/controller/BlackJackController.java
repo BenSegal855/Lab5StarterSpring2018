@@ -66,7 +66,7 @@ public class BlackJackController implements Initializable {
 	@FXML
 	private ToggleButton btnPos2SitLeave;
 
-	private int iAnimationLength = 250;
+	private int iAnimationLength = 500;
 
 	private int iDrawCardP1 = 0;
 	private int iDrawCardP2 = 0;
@@ -140,18 +140,18 @@ public class BlackJackController implements Initializable {
 		ParallelTransition patTMoveRot = new ParallelTransition();
 
 		// Add transitions you want to execute currently to the parallel transition
-		patTMoveRot.getChildren().addAll(rotT, pathT);
+		patTMoveRot.getChildren().addAll(rotT, transT);
 		// patTMoveRot.getChildren().addAll(pathT, rotT);
 
 		// Create a new Parallel transition to fade in/fade out
-		ParallelTransition patTFadeInFadeOut = createFadeTransition(
+		SequentialTransition patTScaleInScaleOut = createScaleTransition(
 				(ImageView) getCardHBox(iPosition).getChildren().get(iDrawCard), imgDealCard.getImage());
 
 		// Create a new sequential transition
 		SequentialTransition seqDeal = new SequentialTransition();
 
 		// Add the two parallel transitions to the sequential transition
-		seqDeal.getChildren().addAll(patTMoveRot, patTFadeInFadeOut);
+		seqDeal.getChildren().addAll(patTMoveRot, patTScaleInScaleOut);
 
 		// Set up event handler to remove the animation image after the transition is
 		// complete
@@ -409,30 +409,37 @@ public class BlackJackController implements Initializable {
 		translateTransition.setFromX(0);
 		translateTransition.setToX(toPoint.getX() - fromPoint.getX());
 		translateTransition.setFromY(0);
-		translateTransition.setToY(toPoint.getY() - fromPoint.getY());
+		translateTransition.setToY(toPoint.getY() - fromPoint.getY() + 32);
 		translateTransition.setCycleCount(1);
 		translateTransition.setAutoReverse(false);
 
 		return translateTransition;
 	}
 
-	private ParallelTransition createFadeTransition(final ImageView imgVFadeOut, final Image imgFadeIn) {
+	private SequentialTransition createScaleTransition(final ImageView imgVFadeOut, final Image imgFadeIn) {
 
-		FadeTransition fadeOutTransition = new FadeTransition(Duration.millis(iAnimationLength), imgVFadeOut);
-		fadeOutTransition.setFromValue(1.0);
-		fadeOutTransition.setToValue(0.0);
-		fadeOutTransition.setOnFinished(new EventHandler<ActionEvent>() {
+		ScaleTransition scaleOutTransition = new ScaleTransition(Duration.millis(iAnimationLength/2), imgVFadeOut);
+		scaleOutTransition.setFromX(1);
+		scaleOutTransition.setByX(0.1);
+		scaleOutTransition.setCycleCount(1);
+		//scaleOutTransition.setDuration(Duration.seconds(.25));
+		//fadeOutTransition.setToValue(0.0);
+		scaleOutTransition.setOnFinished(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent arg0) {
 				imgVFadeOut.setImage(imgFadeIn);
 			}
 		});
 
-		FadeTransition fadeInTransition = new FadeTransition(Duration.millis(iAnimationLength), imgVFadeOut);
-		fadeInTransition.setFromValue(0.0);
-		fadeInTransition.setToValue(1.0);
-		ParallelTransition parallelTransition = new ParallelTransition();
-		parallelTransition.getChildren().addAll(fadeOutTransition, fadeInTransition);
+		ScaleTransition scaleInTransition = new ScaleTransition(Duration.millis(iAnimationLength/2), imgVFadeOut);
+		scaleInTransition.setFromX(0.1);
+		scaleInTransition.setByX(100);
+		scaleInTransition.setCycleCount(1);
+		scaleInTransition.setDuration(Duration.seconds(1));
+//		fadeInTransition.setFromValue(0.0);
+//		fadeInTransition.setToValue(1.0);
+		SequentialTransition parallelTransition = new SequentialTransition();
+		parallelTransition.getChildren().addAll(scaleInTransition,scaleOutTransition);
 		return parallelTransition;
 	}
 }

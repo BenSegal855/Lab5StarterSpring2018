@@ -418,12 +418,11 @@ public class BlackJackController implements Initializable {
 
 	private SequentialTransition createScaleTransition(final ImageView imgVFadeOut, final Image imgFadeIn) {
 
-		ScaleTransition scaleOutTransition = new ScaleTransition(Duration.millis(iAnimationLength/2), imgVFadeOut);
-		scaleOutTransition.setFromX(1);
-		scaleOutTransition.setByX(0.1);
+		ScaleTransition scaleOutTransition = new ScaleTransition(Duration.millis(100), imgVFadeOut);
+		scaleOutTransition.setFromX(1F);
+		scaleOutTransition.setByX(0F);
 		scaleOutTransition.setCycleCount(1);
-		//scaleOutTransition.setDuration(Duration.seconds(.25));
-		//fadeOutTransition.setToValue(0.0);
+;
 		scaleOutTransition.setOnFinished(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent arg0) {
@@ -431,15 +430,13 @@ public class BlackJackController implements Initializable {
 			}
 		});
 
-		ScaleTransition scaleInTransition = new ScaleTransition(Duration.millis(iAnimationLength/2), imgVFadeOut);
-		scaleInTransition.setFromX(0.1);
-		scaleInTransition.setByX(100);
+		ScaleTransition scaleInTransition = new ScaleTransition(Duration.millis(100), imgVFadeOut);
+		scaleInTransition.setFromX(0F);
+		scaleInTransition.setByX(1F);
 		scaleInTransition.setCycleCount(1);
-		scaleInTransition.setDuration(Duration.seconds(1));
-//		fadeInTransition.setFromValue(0.0);
-//		fadeInTransition.setToValue(1.0);
-		SequentialTransition parallelTransition = new SequentialTransition();
-		parallelTransition.getChildren().addAll(scaleInTransition,scaleOutTransition);
-		return parallelTransition;
+
+		SequentialTransition sequentialTransition = new SequentialTransition();
+		sequentialTransition.getChildren().addAll(scaleInTransition,scaleOutTransition);
+		return sequentialTransition;
 	}
 }
